@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEXERA - Event Timeline</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@900&display=swap" rel="stylesheet">
+
+    <style>
+        /* ==========================================
+           BASE STYLES (Copied from Main Site)
+           ==========================================
+        */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0a0a2a; /* Dark blue-purple background */
+            color: #e0e0e0;
+            min-height: 100vh;
+        }
+
+        /* Re-using the card style from the main site for consistency */
+        .timeline-card {
+            background-color: rgba(31, 41, 55, 0.5); /* bg-gray-800/50 */
+            backdrop-filter: blur(4px); 
+            -webkit-backdrop-filter: blur(4px); 
+            padding: 1.5rem; 
+            border-radius: 1rem; 
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            border-width: 1px; 
+            border-color: rgba(55, 65, 81, 0.5); 
+        }
+    </style>
+</head>
+
+<body>
+
+    <section id="timeline" class="container mx-auto px-6 py-24">
+        <h2 class="text-4xl font-bold text-center mb-16 text-white">Event Timeline</h2>
+        
+        <div class="relative">
+            
+            <div class="hidden md:block absolute left-1/2 transform -translate-x-1/2 h-full w-1 bg-gray-700/50"></div>
+
+            <div class="space-y-12 py-2"> 
+                
+                <div class="flex flex-col md:flex-row items-center justify-between w-full relative">
+                    <div class="order-1 md:w-5/12"></div> <div class="z-20 flex items-center order-1 bg-blue-600 shadow-xl w-8 h-8 rounded-full border-4 border-gray-900 md:absolute md:left-1/2 md:transform md:-translate-x-1/2 mb-4 md:mb-0"></div>
+                    
+                    <div class="order-1 md:w-5/12 w-full px-1 md:px-0">
+                        <div class="timeline-card p-6 transform transition duration-300 hover:scale-105 hover:border-blue-500">
+                            <span class="text-blue-400 font-bold text-xl mb-2 block" style="font-family: 'Orbitron', sans-serif;">09:00 AM</span>
+                            <h3 class="text-2xl font-bold text-white mb-2">Grand Inauguration</h3>
+                            <p class="text-blue-200 text-sm">Main Auditorium - Lighting of the lamp and keynote speeches.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex flex-col md:flex-row-reverse items-center justify-between w-full relative">
+                    <div class="order-1 md:w-5/12"></div>
+                    
+                    <div class="z-20 flex items-center order-1 bg-blue-600 shadow-xl w-8 h-8 rounded-full border-4 border-gray-900 md:absolute md:left-1/2 md:transform md:-translate-x-1/2 mb-4 md:mb-0"></div>
+                    
+                    <div class="order-1 md:w-5/12 w-full px-1 md:px-0">
+                        <div class="timeline-card p-6 transform transition duration-300 hover:scale-105 hover:border-blue-500">
+                            <span class="text-blue-400 font-bold text-xl mb-2 block" style="font-family: 'Orbitron', sans-serif;">10:30 AM</span>
+                            <h3 class="text-2xl font-bold text-white mb-2">Hackathon Begins</h3>
+                            <p class="text-blue-200 text-sm">Tech Lab - 24-hour coding marathon starts now.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex flex-col md:flex-row items-center justify-between w-full relative">
+                    <div class="order-1 md:w-5/12"></div>
+                    
+                    <div class="z-20 flex items-center order-1 bg-blue-600 shadow-xl w-8 h-8 rounded-full border-4 border-gray-900 md:absolute md:left-1/2 md:transform md:-translate-x-1/2 mb-4 md:mb-0"></div>
+                    
+                    <div class="order-1 md:w-5/12 w-full px-1 md:px-0">
+                        <div class="timeline-card p-6 transform transition duration-300 hover:scale-105 hover:border-blue-500">
+                            <span class="text-blue-400 font-bold text-xl mb-2 block" style="font-family: 'Orbitron', sans-serif;">01:00 PM</span>
+                            <h3 class="text-2xl font-bold text-white mb-2">Robotics: Robo-War</h3>
+                            <p class="text-blue-200 text-sm">Arena Ground - Battle of the bots supremacy.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex flex-col md:flex-row-reverse items-center justify-between w-full relative">
+                    <div class="order-1 md:w-5/12"></div>
+                    
+                    <div class="z-20 flex items-center order-1 bg-blue-600 shadow-xl w-8 h-8 rounded-full border-4 border-gray-900 md:absolute md:left-1/2 md:transform md:-translate-x-1/2 mb-4 md:mb-0"></div>
+                    
+                    <div class="order-1 md:w-5/12 w-full px-1 md:px-0">
+                        <div class="timeline-card p-6 transform transition duration-300 hover:scale-105 hover:border-blue-500">
+                            <span class="text-blue-400 font-bold text-xl mb-2 block" style="font-family: 'Orbitron', sans-serif;">05:00 PM</span>
+                            <h3 class="text-2xl font-bold text-white mb-2">DJ Night</h3>
+                            <p class="text-blue-200 text-sm">Open Air Theatre - High energy closing ceremony.</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+</body>
+</html>

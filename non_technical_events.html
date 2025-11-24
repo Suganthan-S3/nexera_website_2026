@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EVENTS</title>
+    <style>
+        *{
+    box-sizing: border-box;
+    margin: 0;
+}
+
+.main{
+    width: 100%;
+    height: 100vh;
+    position: relative;
+    overflow: hidden;
+    text-align: center;
+    background-image: url(./images/bg1.jpg)
+}
+
+.main .inside{
+    width: 200px;
+    height: 250px;
+    position: absolute;
+    top: 150px;
+    left: calc(50% - 100px);
+    transform-style: preserve-3d;
+    transform: perspective(900px);
+    animation: rotate 25s linear infinite;
+}
+
+.main .inside:hover{
+    animation-play-state: paused; 
+    transform: perspective(1000px) rotateX(-15deg)
+      rotateY(var(--current-rotation, 0deg));
+} 
+
+@keyframes rotate{
+    from{
+        transform: perspective(900px) rotateX(-20deg) rotateY(0deg) ;
+    }to{
+        transform: perspective(900px) rotateX(-20deg) rotateY(360deg);
+    }
+}
+
+.main .inside .card{
+    position: absolute;
+    inset: 0 0 0 0;
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+    transform: 
+                rotateY(calc( (var(--pos) - 1)*(360 / var(--tot)) * 1deg))
+                translateZ(400px);
+    
+}
+
+
+
+.main .inside .card img{
+    border-radius: 15px;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+ .main .inside .card .img:hover{
+    box-shadow: 0 8px 25px rgb(255, 36, 36);
+    transform: scale(1.05);
+} 
+
+.main .inside .card button{
+    position: absolute;
+    top: 88%;
+    left: 65%;
+    transform: translate(-50%, -50%);
+    color: rgb(0, 0, 0);
+    z-index: 2;
+    text-align: center;
+    width: 100px;
+    margin: 2;
+    padding: 5px 5px 5px 5px;
+    border-radius: 7px;
+    border: none;
+    transition: 350ms;
+}
+
+.main .inside .card button:hover{
+
+    box-shadow: 0 5px 10px rgba(255, 255, 255, 0.636);
+    /* transform: scale(1.0); */
+}
+
+.main h1{
+    margin-top: 15px;
+    font-size: 60px;
+    color: azure;
+}
+    </style>
+</head>
+<body>
+    <section class="main">
+        <div>
+            <h1>EVENTS</h1>
+        </div>
+        <div class="inside" style="--tot: 8">
+             <div class="card" style="--pos: 1"><img src="./images/Frame 1.png" alt=""> <button>Know More</button> </div>
+             <div class="card" style="--pos: 2"><img src="./images/Frame 3.png" alt=""><button>Know More</button></div>
+             <div class="card" style="--pos: 3"><img src="./images/Frame 5.png" alt=""><button>Know More</button></div>
+             <div class="card" style="--pos: 4"><img src="./images/Frame 2.png" alt=""><button>Know More</button></div>
+             <div class="card" style="--pos: 5"><img src="./images/Frame 5.png" alt=""><button>Know More</button></div>
+             <div class="card" style="--pos: 6"><img src="./images/Frame 4.png" alt=""><button>Know More</button></div>
+             <div class="card" style="--pos: 7"><img src="./images/Frame 1.png" alt=""><button>Know More</button></div>
+             <div class="card" style="--pos: 8"><img src="./images/Frame 3.png" alt=""><button>Know More</button></div>
+        </div>
+
+    </section>
+</body>
+</html>
