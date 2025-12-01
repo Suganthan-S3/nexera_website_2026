@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEXERA - The Future is Now</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@900&display=swap" rel="stylesheet">
+
+    <script src="https://cdn.jsdelivr.net/npm/@tsparticles/confetti@3.0.3/tsparticles.confetti.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tsparticles/slim@3.0.3/tsparticles.slim.bundle.min.js"></script>
+
+    <style>
+        /* ==========================================
+           BASE STYLES
+           ==========================================
+        */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0a0a2a; 
+            color: #e0e0e0;
+            overflow: hidden; 
+            position: relative;
+        }
+
+        #tsparticles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0; 
+            pointer-events: auto; 
+        }
+
+        /* ==========================================
+           LOGIN MODAL STYLES
+           ==========================================
+        */
+        #login-modal.modal-visible,
+        #register-modal.modal-visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .login-card {
+            background-color: rgba(31, 41, 55, 0.8); 
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            padding: 2.5rem;
+            border-radius: 1rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            border-width: 1px;
+            border-color: rgba(55, 65, 81, 0.5);
+            transform: scale(0.95);
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        
+        #login-modal.modal-visible .login-card,
+        #register-modal.modal-visible .login-card {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        .login-input {
+            width: 100%;
+            background-color: rgba(17, 24, 39, 0.5); 
+            border: 1px solid rgba(55, 65, 81, 0.7); 
+            color: white;
+            padding: 1rem; 
+            border-radius: 0.5rem; 
+            transition: border-color 0.3s;
+        }
+        .login-input:focus {
+            outline: none;
+            border-color: #60a5fa; 
+        }
+
+        .login-label-bg {
+            background-color: rgba(31, 41, 55, 0.8); 
+        }
+
+        /* ==========================================
+           HERO SECTION (HEADER)
+           ==========================================
+        */
+        header {
+            height: 100vh;
+            width: 100%;
+            display: flex; 
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            background-color: transparent; 
+            z-index: 30;
+            opacity: 1;
+            transform: scale(1) translate(0, 0);
+            filter: blur(0px);
+            transition: all 0.5s cubic-bezier(0.6, -0.2, 0.7, 1); 
+        }
+
+        .hero-state-hidden {
+            display: none; 
+        }
+
+        header.hero-hiding {
+            transform: translate(-45vw, -45vh) scale(0.1); 
+            opacity: 0.2;
+            filter: blur(5px);
+        }
+
+        /* ==========================================
+           SCRAMBLE ANIMATION STYLES
+           ==========================================
+        */
+        .letter {
+            opacity: 0;
+            display: inline-block;
+            font-size: clamp(3rem, 15vw, 10rem); 
+            font-weight: 900;
+            color: white;
+            transition: opacity 0.5s ease;
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        .hero-visible .letter {
+            opacity: 1;
+        }
+
+        .hero-text {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.5s ease 2s, transform 0.5s ease 2s;
+        }
+
+        .hero-visible .hero-text {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ==========================================
+           MAIN CONTENT
+           ==========================================
+        */
+        .content-wrapper {
+            position: relative;
+            z-index: 20; 
+            background-color: transparent;
+            overflow-y: auto;
+            height: 100vh;
+            opacity: 0;
+            transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            pointer-events: none; 
+            backdrop-filter: blur(2px);
+        }
+        
+        .content-wrapper.content-visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        /* ==========================================
+           CARD STYLES & POLISH
+           ==========================================
+        */
+        .event-card svg { transition: all 0.3s ease; }
+        .event-card:hover svg { transform: scale(1.1); color: #60a5fa; }
+        .event-card { transition: all 0.3s ease; } /* Added general transition */
+
+        .footer-card {
+            background-color: rgba(31, 41, 55, 0.5); 
+            backdrop-filter: blur(4px); 
+            -webkit-backdrop-filter: blur(4px); 
+            padding: 2rem; 
+            border-radius: 1rem; 
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            border-width: 1px; 
+            border-color: rgba(55, 65, 81, 0.5); 
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #0a0a2a; }
+        ::-webkit-scrollbar-thumb { background: #1f2937; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #3b82f6; }
+
+        /* Gradient Text */
+        .text-gradient {
+            background: linear-gradient(to right, #60a5fa, #a855f7, #60a5fa);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-size: 200% auto;
+            animation: gradientMove 5s linear infinite;
+        }
+
+        @keyframes gradientMove {
+            0% { background-position: 0% center; }
+            100% { background-position: 200% center; }
+        }
+
+        /* Marquee */
+        .marquee-container {
+            overflow: hidden;
+            white-space: nowrap;
+            position: relative;
+            mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+            -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+        }
+        .marquee-content {
+            display: inline-flex;
+            gap: 4rem;
+            animation: scroll 20s linear infinite;
+        }
+        .marquee-content:hover { animation-play-state: paused; }
+        @keyframes scroll {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        /* Filter Btns */
+        .filter-btn {
+            background: rgba(31, 41, 55, 0.5);
+            border: 1px solid rgba(75, 85, 99, 0.4);
+            color: #9ca3af;
+            transition: all 0.3s ease;
+        }
+        .filter-btn:hover { color: white; border-color: #60a5fa; }
+        .filter-btn.active {
+            background-color: #2563eb; color: white;
+            border-color: #2563eb; box-shadow: 0 0 15px rgba(37, 99, 235, 0.5);
+        }
+        @keyframes fadeInScale {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        .animate-fade-in { animation: fadeInScale 0.4s ease-out forwards; }
+
+        /* Autofill Fix */
+        input:-webkit-autofill,
+        input:-webkit-autofill:hover, 
+        input:-webkit-autofill:focus, 
+        input:-webkit-autofill:active {
+            -webkit-box-shadow: 0 0 0 30px #111827 inset !important;
+            -webkit-text-fill-color: white !important;
+            transition: background-color 5000s ease-in-out 0s;
+        }
+    </style>
+</head>
+<body class="relative">
+
+    <div id="tsparticles"></div>
+
+    <div id="fixed-logo" class="fixed top-8 left-8 z-50 opacity-0 transition-all duration-500 pointer-events-none">
+        <a href="#" class="text-white text-2xl font-bold tracking-widest hover:text-blue-400 transition-colors" style="font-family: 'Orbitron', sans-serif;">
+            NEXERA
+        </a>
+    </div>
+
+    <nav id="main-nav" class="fixed top-8 right-8 z-50 flex items-center">
+        <div class="flex items-center space-x-6 md:space-x-8">
+            <a href="#" class="nav-link text-gray-400 hover:text-white text-xs md:text-sm uppercase tracking-widest hover:-translate-y-0.5 transition-all duration-300">Home</a>
+            <span class="w-1 h-1 bg-gray-600 rounded-full"></span>
+            <a href="#events" class="nav-link text-gray-400 hover:text-white text-xs md:text-sm uppercase tracking-widest hover:-translate-y-0.5 transition-all duration-300">Events</a>
+            <span class="w-1 h-1 bg-gray-600 rounded-full"></span>
+            <a href="brochure.jpg" target="_blank" class="text-gray-400 hover:text-white text-xs md:text-sm uppercase tracking-widest hover:-translate-y-0.5 transition-all duration-300">Brochure</a>
+            <span class="w-1 h-1 bg-gray-600 rounded-full"></span>
+            <a href="#" id="login-btn" class="text-blue-400 hover:text-blue-300 text-xs md:text-sm uppercase tracking-widest font-semibold hover:-translate-y-0.5 transition-all duration-300">Login</a>
+        </div>
+    </nav>
+
+    <header class="hero-visible"> 
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[60vw] h-[60vw] max-w-[800px] max-h-[800px] bg-blue-700 rounded-full opacity-30 blur-[150px]"></div>
+
+        <h1 class="z-10" aria-label="NEXERA">
+            <span class="letter"></span>
+            <span class="letter"></span>
+            <span class="letter"></span>
+            <span class="letter"></span>
+            <span class="letter"></span>
+            <span class="letter"></span>
+        </h1>
+        
+    </header>
+
+    <div id="login-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 opacity-0 pointer-events-none transition-all duration-300">
+        <div id="login-overlay" class="absolute inset-0 bg-black/70 backdrop-blur-sm"></div>
+        <div class="login-card relative w-full max-w-md">
+            <button id="login-close-btn" class="absolute -top-3 -right-3 text-white bg-gray-700 rounded-full p-1 hover:bg-gray-600 transition-colors">
+                <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+            </button>
+            <h3 class="text-4xl font-bold text-white mb-6 text-center">Login</h3>
+            <form action="#">
+                <div class="relative z-0 mb-6">
+                    <input type="email" id="email" name="email" class="login-input peer" placeholder=" " required />
+                    <label for="email" class="login-label-bg px-1 absolute text-blue-200 duration-300 transform -translate-y-5 scale-90 top-3 z-10 origin-[0] left-2 peer-focus:text-blue-400 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-1 peer-focus:scale-90 peer-focus:-translate-y-5">Email Address</label>
+                </div>
+                <div class="relative z-0 mb-6">
+                    <input type="password" id="password" name="password" class="login-input peer" placeholder=" " required />
+                    <label for="password" class="login-label-bg px-1 absolute text-blue-200 duration-300 transform -translate-y-5 scale-90 top-3 z-10 origin-[0] left-2 peer-focus:text-blue-400 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-1 peer-focus:scale-90 peer-focus:-translate-y-5">Password</label>
+                </div>
+                <button type="submit" class="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-500 transition-all duration-300">Sign In</button>
+                <div class="flex justify-between text-sm mt-6">
+                    <a href="#" class="font-semibold text-blue-400 hover:text-blue-300">Forgot Password?</a>
+                    <a href="#" id="switch-to-register" class="font-semibold text-blue-400 hover:text-blue-300">Create an account</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="register-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 opacity-0 pointer-events-none transition-all duration-300">
+        <div id="register-overlay" class="absolute inset-0 bg-black/70 backdrop-blur-sm"></div>
+        <div class="login-card relative w-full max-w-md">
+            <button id="register-close-btn" class="absolute -top-3 -right-3 text-white bg-gray-700 rounded-full p-1 hover:bg-gray-600 transition-colors">
+                <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+            </button>
+            <h3 class="text-3xl font-bold text-white mb-6 text-center">Create Account</h3>
+            <form action="#">
+                <div class="relative z-0 mb-6">
+                    <input type="text" id="reg-name" name="reg-name" class="login-input peer" placeholder=" " required />
+                    <label for="reg-name" class="login-label-bg px-1 absolute text-blue-200 duration-300 transform -translate-y-5 scale-90 top-3 z-10 origin-[0] left-2 peer-focus:text-blue-400 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-1 peer-focus:scale-90 peer-focus:-translate-y-5">Full Name</label>
+                </div>
+                <div class="relative z-0 mb-6">
+                    <input type="email" id="reg-email" name="reg-email" class="login-input peer" placeholder=" " required />
+                    <label for="reg-email" class="login-label-bg px-1 absolute text-blue-200 duration-300 transform -translate-y-5 scale-90 top-3 z-10 origin-[0] left-2 peer-focus:text-blue-400 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-1 peer-focus:scale-90 peer-focus:-translate-y-5">Email Address</label>
+                </div>
+                <div class="relative z-0 mb-6">
+                    <input type="password" id="reg-password" name="reg-password" class="login-input peer" placeholder=" " required />
+                    <label for="reg-password" class="login-label-bg px-1 absolute text-blue-200 duration-300 transform -translate-y-5 scale-90 top-3 z-10 origin-[0] left-2 peer-focus:text-blue-400 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-1 peer-focus:scale-90 peer-focus:-translate-y-5">Password</label>
+                </div>
+                <div class="relative z-0 mb-6">
+                    <input type="password" id="reg-confirm" name="reg-confirm" class="login-input peer" placeholder=" " required />
+                    <label for="reg-confirm" class="login-label-bg px-1 absolute text-blue-200 duration-300 transform -translate-y-5 scale-90 top-3 z-10 origin-[0] left-2 peer-focus:text-blue-400 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-1 peer-focus:scale-90 peer-focus:-translate-y-5">Confirm Password</label>
+                </div>
+                <button type="submit" class="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-500 transition-all duration-300">Register</button>
+                <div class="text-center text-sm mt-6">
+                    <span class="text-gray-400">Already have an account?</span>
+                    <a href="#" id="switch-to-login" class="font-semibold text-blue-400 hover:text-blue-300 ml-1">Login here</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <main class="content-wrapper relative z-20">
+        <section id="events" class="container mx-auto px-6 py-24 min-h-screen">
+            <h2 class="text-4xl font-bold text-center mb-4 text-gradient">Upcoming Events</h2>
+            
+            <div class="flex justify-center gap-4 mb-12 flex-wrap">
+                <button class="filter-btn active px-6 py-2 rounded-full font-semibold text-sm tracking-wide" data-filter="all">All</button>
+                <button class="filter-btn px-6 py-2 rounded-full font-semibold text-sm tracking-wide" data-filter="tech">Technical</button>
+                <button class="filter-btn px-6 py-2 rounded-full font-semibold text-sm tracking-wide" data-filter="flagship">Flagship</button>
+                <button class="filter-btn px-6 py-2 rounded-full font-semibold text-sm tracking-wide" data-filter="non-tech">Non-Tech</button>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6" id="events-grid">                
+                <div class="event-card group bg-gray-800/50 backdrop-blur-sm p-6 rounded-2xl shadow-lg border border-gray-700/50 hover:border-blue-500 hover:-translate-y-1" data-category="tech">
+                    <svg class="w-12 h-12 text-blue-400 mb-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M17.25 6.75L22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5 0l-4.5 16.5" /></svg>
+                    <div class="mb-4"><h3 class="text-2xl font-semibold text-white">Mega Hackathon</h3><span class="inline-block mt-2 px-3 py-1 text-xs font-semibold text-blue-900 bg-blue-200 rounded-full">Flagship</span></div>
+                    <p class="text-blue-100 mb-4 text-sm">24-Hour coding marathon. Build solutions for real-world problems.</p>
+                    <button class="w-full py-2 rounded-lg border border-blue-500 text-blue-400 hover:bg-blue-600 hover:text-white transition-all font-semibold">Register Now</button>
+                </div>
+                <div class="event-card group bg-gray-800/50 backdrop-blur-sm p-6 rounded-2xl shadow-lg border border-gray-700/50 transition-all duration-300 hover:border-blue-500 hover:-translate-y-1" data-category="tech">
+                    <svg class="w-12 h-12 text-blue-400 mb-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17.25v1.007a3 3 0 01-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0115 18.257V17.25m6-12V15a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 15V5.25m18 0A2.25 2.25 0 0018.75 3H5.25A2.25 2.25 0 003 5.25m18 0V12a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 12V5.25" /></svg>
+                    <div class="mb-4"><h3 class="text-2xl font-semibold text-white">Robo Wars</h3><span class="inline-block mt-2 px-3 py-1 text-xs font-semibold text-purple-900 bg-purple-200 rounded-full">Robotics</span></div>
+                    <p class="text-blue-100 mb-4 text-sm">Bring your bots to the arena. May the strongest bot survive.</p>
+                    <button class="w-full py-2 rounded-lg border border-blue-500 text-blue-400 hover:bg-blue-600 hover:text-white transition-all font-semibold">Register Now</button>
+                </div>
+                <div class="event-card group bg-gray-800/50 backdrop-blur-sm p-6 rounded-2xl shadow-lg border border-gray-700/50 transition-all duration-300 hover:border-blue-500 hover:-translate-y-1" data-category="tech">
+                    <svg class="w-12 h-12 text-blue-400 mb-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M14.25 9.75L16.5 12l-2.25 2.25m-4.5 0L7.5 12l2.25-2.25M6 20.25h12A2.25 2.25 0 0020.25 18V6A2.25 2.25 0 0018 3.75H6A2.25 2.25 0 003.75 6v12A2.25 2.25 0 006 20.25z" /></svg>
+                    <div class="mb-4"><h3 class="text-2xl font-semibold text-white">Code Relay</h3><span class="inline-block mt-2 px-3 py-1 text-xs font-semibold text-green-900 bg-green-200 rounded-full">Coding</span></div>
+                    <p class="text-blue-100 mb-4 text-sm">A relay race, but with code. Switch teammates every 10 minutes!</p>
+                    <button class="w-full py-2 rounded-lg border border-blue-500 text-blue-400 hover:bg-blue-600 hover:text-white transition-all font-semibold">Register Now</button>
+                </div>
+                <div class="event-card group bg-gray-800/50 backdrop-blur-sm p-6 rounded-2xl shadow-lg border border-gray-700/50 transition-all duration-300 hover:border-blue-500 hover:-translate-y-1" data-category="flagship">
+                    <svg class="w-12 h-12 text-blue-400 mb-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.348a1.125 1.125 0 010 1.971l-11.54 6.347a1.125 1.125 0 01-1.667-.985V5.653z" /></svg>
+                    <div class="mb-4"><h3 class="text-2xl font-semibold text-white">VLSI</h3><span class="inline-block mt-2 px-3 py-1 text-xs font-semibold text-red-900 bg-red-200 rounded-full">Flagship</span></div>
+                    <p class="text-blue-100 mb-4 text-sm">Implement Verilog code in Vivado.</p>
+                    <button class="w-full py-2 rounded-lg border border-blue-500 text-blue-400 hover:bg-blue-600 hover:text-white transition-all font-semibold">Register Now</button>
+                </div>
+            </div>
+        </section>
+        <section id="sponsors" class="py-24">
+            <div class="container mx-auto px-6">
+                <h2 class="text-3xl font-bold text-center mb-12 text-gradient">Trusted Partners</h2>
+                
+                <div class="marquee-container w-full">
+                    <div class="marquee-content items-center">
+                        <img src="https://placehold.co/150x60/transparent/9ca3af?text=GOOGLE" alt="Sponsor" class="h-12 opacity-50 hover:opacity-100 transition-opacity cursor-pointer">
+                        <img src="https://placehold.co/150x60/transparent/9ca3af?text=MICROSOFT" alt="Sponsor" class="h-12 opacity-50 hover:opacity-100 transition-opacity cursor-pointer">
+                        <img src="https://placehold.co/150x60/transparent/9ca3af?text=TESLA" alt="Sponsor" class="h-12 opacity-50 hover:opacity-100 transition-opacity cursor-pointer">
+                        <img src="https://placehold.co/150x60/transparent/9ca3af?text=AMAZON" alt="Sponsor" class="h-12 opacity-50 hover:opacity-100 transition-opacity cursor-pointer">
+                        <img src="https://placehold.co/150x60/transparent/9ca3af?text=INTEL" alt="Sponsor" class="h-12 opacity-50 hover:opacity-100 transition-opacity cursor-pointer">
+                        <img src="https://placehold.co/150x60/transparent/9ca3af?text=IBM" alt="Sponsor" class="h-12 opacity-50 hover:opacity-100 transition-opacity cursor-pointer">
+                        
+                        <img src="https://placehold.co/150x60/transparent/9ca3af?text=GOOGLE" alt="Sponsor" class="h-12 opacity-50 hover:opacity-100 transition-opacity cursor-pointer">
+                        <img src="https://placehold.co/150x60/transparent/9ca3af?text=MICROSOFT" alt="Sponsor" class="h-12 opacity-50 hover:opacity-100 transition-opacity cursor-pointer">
+                        <img src="https://placehold.co/150x60/transparent/9ca3af?text=TESLA" alt="Sponsor" class="h-12 opacity-50 hover:opacity-100 transition-opacity cursor-pointer">
+                        <img src="https://placehold.co/150x60/transparent/9ca3af?text=AMAZON" alt="Sponsor" class="h-12 opacity-50 hover:opacity-100 transition-opacity cursor-pointer">
+                        <img src="https://placehold.co/150x60/transparent/9ca3af?text=INTEL" alt="Sponsor" class="h-12 opacity-50 hover:opacity-100 transition-opacity cursor-pointer">
+                        <img src="https://placehold.co/150x60/transparent/9ca3af?text=IBM" alt="Sponsor" class="h-12 opacity-50 hover:opacity-100 transition-opacity cursor-pointer">
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section id="timeline" class="py-24 relative">
+            <div class="container mx-auto px-6">
+                <h2 class="text-3xl font-bold text-center mb-12 text-gradient">Event Timeline</h2>
+                
+                <div class="relative max-w-4xl mx-auto">
+                    
+                    <div class="absolute top-0 left-0 right-0 h-12 bg-gradient-to-b from-[#0a0a2a] to-transparent z-20 pointer-events-none"></div>
+                    <div class="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-[#0a0a2a] to-transparent z-20 pointer-events-none"></div>
+
+                    <div class="timeline-scroll overflow-y-auto max-h-[600px] px-4 py-8 relative">
+                        
+                        <div class="absolute left-4 md:left-1/2 transform md:-translate-x-1/2 h-full w-1 bg-gray-700/50 top-0"></div>
+
+                        <div class="space-y-12">
+                            
+                            <div class="flex flex-col md:flex-row items-center justify-between w-full relative">
+                                <div class="order-1 md:w-5/12"></div>
+                                <div class="z-20 flex items-center order-1 bg-blue-600 shadow-xl w-6 h-6 rounded-full border-2 border-gray-900 absolute left-2.5 md:left-1/2 md:transform md:-translate-x-1/2 -mt-10 md:mt-0"></div>
+                                <div class="order-1 md:w-5/12 w-full pl-10 md:pl-0 md:pr-0">
+                                    <div class="bg-gray-800/50 backdrop-blur-sm p-6 rounded-xl border border-gray-700/50 hover:border-blue-500 transition-all">
+                                        <span class="text-blue-400 font-bold text-lg block mb-1">09:00 AM</span>
+                                        <h3 class="text-xl font-bold text-white">Grand Inauguration</h3>
+                                        <p class="text-gray-400 text-sm mt-1">Main Auditorium</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="flex flex-col md:flex-row-reverse items-center justify-between w-full relative">
+                                <div class="order-1 md:w-5/12"></div>
+                                <div class="z-20 flex items-center order-1 bg-blue-600 shadow-xl w-6 h-6 rounded-full border-2 border-gray-900 absolute left-2.5 md:left-1/2 md:transform md:-translate-x-1/2 -mt-10 md:mt-0"></div>
+                                <div class="order-1 md:w-5/12 w-full pl-10 md:pl-0 md:pr-0">
+                                    <div class="bg-gray-800/50 backdrop-blur-sm p-6 rounded-xl border border-gray-700/50 hover:border-blue-500 transition-all">
+                                        <span class="text-blue-400 font-bold text-lg block mb-1">10:30 AM</span>
+                                        <h3 class="text-xl font-bold text-white">Hackathon Begins</h3>
+                                        <p class="text-gray-400 text-sm mt-1">Tech Lab A</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="flex flex-col md:flex-row items-center justify-between w-full relative">
+                                <div class="order-1 md:w-5/12"></div>
+                                <div class="z-20 flex items-center order-1 bg-blue-600 shadow-xl w-6 h-6 rounded-full border-2 border-gray-900 absolute left-2.5 md:left-1/2 md:transform md:-translate-x-1/2 -mt-10 md:mt-0"></div>
+                                <div class="order-1 md:w-5/12 w-full pl-10 md:pl-0 md:pr-0">
+                                    <div class="bg-gray-800/50 backdrop-blur-sm p-6 rounded-xl border border-gray-700/50 hover:border-blue-500 transition-all">
+                                        <span class="text-blue-400 font-bold text-lg block mb-1">01:00 PM</span>
+                                        <h3 class="text-xl font-bold text-white">Robo Wars</h3>
+                                        <p class="text-gray-400 text-sm mt-1">Arena Ground</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="flex flex-col md:flex-row-reverse items-center justify-between w-full relative">
+                                <div class="order-1 md:w-5/12"></div>
+                                <div class="z-20 flex items-center order-1 bg-blue-600 shadow-xl w-6 h-6 rounded-full border-2 border-gray-900 absolute left-2.5 md:left-1/2 md:transform md:-translate-x-1/2 -mt-10 md:mt-0"></div>
+                                <div class="order-1 md:w-5/12 w-full pl-10 md:pl-0 md:pr-0">
+                                    <div class="bg-gray-800/50 backdrop-blur-sm p-6 rounded-xl border border-gray-700/50 hover:border-blue-500 transition-all">
+                                        <span class="text-blue-400 font-bold text-lg block mb-1">05:00 PM</span>
+                                        <h3 class="text-xl font-bold text-white">Prize Distribution</h3>
+                                        <p class="text-gray-400 text-sm mt-1">Main Auditorium</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="flex flex-col md:flex-row items-center justify-between w-full relative">
+                                <div class="order-1 md:w-5/12"></div>
+                                <div class="z-20 flex items-center order-1 bg-blue-600 shadow-xl w-6 h-6 rounded-full border-2 border-gray-900 absolute left-2.5 md:left-1/2 md:transform md:-translate-x-1/2 -mt-10 md:mt-0"></div>
+                                <div class="order-1 md:w-5/12 w-full pl-10 md:pl-0 md:pr-0">
+                                    <div class="bg-gray-800/50 backdrop-blur-sm p-6 rounded-xl border border-gray-700/50 hover:border-blue-500 transition-all">
+                                        <span class="text-blue-400 font-bold text-lg block mb-1">07:00 PM</span>
+                                        <h3 class="text-xl font-bold text-white">Hackathon</h3>
+                                        <p class="text-gray-400 text-sm mt-1">Open Air Theatre</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+      <footer id="contact" class="pt-20 pb-10 relative z-20">
+            <div class="container mx-auto px-6">
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-10 items-start">
+                    
+                    <div class="flex flex-col items-center md:items-start text-center md:text-left">
+                        
+                        <p class="text-blue-400 text-xs font-bold uppercase tracking-widest mb-2">Organized By</p>
+                        
+                        <h3 class="text-xl font-bold text-gray-200">
+                            Coimbatore Institute of Technology
+                        </h3>
+                        <p class="text-gray-500 text-sm mt-1">
+                            Coimbatore
+                        </p>
+                    </div>
+
+                    <div class="flex flex-col items-center md:items-start">
+                        <h4 class="text-white font-semibold mb-4 uppercase tracking-wider text-sm">Contact Us</h4>
+                        
+                        <div class="space-y-3">
+                            <a href="mailto:info@nexera.com" class="flex items-center space-x-3 text-gray-400 hover:text-blue-400 transition-colors">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                                <span>info@nexera.com</span>
+                            </a>
+                            <a href="tel:+911234567890" class="flex items-center space-x-3 text-gray-400 hover:text-blue-400 transition-colors">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
+                                <span>+91 98765 43210</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col items-center md:items-end">
+                        <h4 class="text-white font-semibold mb-4 uppercase tracking-wider text-sm">Socials</h4>
+                        <div class="flex space-x-4">
+                            <a href="#" class="text-gray-400 hover:text-pink-500 transition-colors transform hover:scale-110">
+                                <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.07 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.225-.149-4.771-1.664-4.919-4.919-.058-1.265-.07-1.645-.07-4.849 0-3.204.012-3.584.07-4.849.149-3.225 1.664-4.771 4.919-4.919 1.266-.058 1.645-.07 4.849-.07zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-7.025 2.87-7.225 7.225-.058 1.28-.072 1.688-.072 4.947 0 3.259.014 3.667.072 4.947.2 4.358 2.867 7.025 7.225 7.225 1.28.058 1.688.072 4.947.072 3.259 0 3.667-.014 4.947-.072 4.354-.2 7.02-2.867 7.225-7.225.058-1.28.072-1.688.072-4.947-.072zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.162 6.162 6.162 6.162-2.759 6.162-6.162-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4s1.791-4 4-4 4 1.79 4 4-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+                            </a>
+                            
+                            <a href="#" class="text-gray-400 hover:text-red-500 transition-colors transform hover:scale-110">
+                                <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/></svg>
+                            </a>
+
+                            <a href="#" class="text-gray-400 hover:text-blue-500 transition-colors transform hover:scale-110">
+                                <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24"><path d="M4.98 3.5c0 1.381-1.11 2.5-2.48 2.5s-2.48-1.119-2.48-2.5c0-1.38 1.11-2.5 2.48-2.5s2.48 1.12 2.48 2.5zm.02 4.5h-5v16h5v-16zm7.982 0h-4.968v16h4.969v-8.399c0-4.67 6.029-5.052 6.029 0v8.399h4.988v-10.131c0-7.88-8.922-7.593-11.018-3.714v-2.155z"/></svg>
+                            </a>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="mt-12 pt-8 text-center">
+                    <p class="text-gray-600 text-sm">
+                        &copy; 2024 NEXERA. All rights reserved.
+                    </p>
+                </div>
+            </div>
+        </footer>
+        </main>
+
+    <script>
+        window.addEventListener('load', () => {
+            setTimeout(initNexera, 100); 
+        });
+
+        function initNexera() {
+            // --- 1. INITIALIZE PARTICLES ---
+            (async () => {
+                await tsParticles.load({
+                    id: "tsparticles",
+                    options: {
+                        background: { color: { value: "transparent" } },
+                        fpsLimit: 120,
+                        interactivity: {
+                            events: {
+                                onHover: { enable: true, mode: "grab" },
+                                onClick: { enable: true, mode: "push" },
+                            },
+                            modes: {
+                                grab: { distance: 150, links: { opacity: 0.5 } },
+                                push: { quantity: 4 },
+                            },
+                        },
+                        particles: {
+                            color: { value: "#ffffff" },
+                            links: { color: "#ffffff", distance: 150, enable: true, opacity: 0.4, width: 1 },
+                            move: { enable: true, speed: 3 }, // Increased Speed
+                            number: { density: { enable: true, area: 800 }, value: 120 }, // Increased Density
+                            opacity: { value: 0.5 },
+                            size: { value: { min: 1, max: 4 } },
+                        },
+                        detectRetina: true,
+                    },
+                });
+            })();
+
+            // --- 2. GET ALL NECESSARY ELEMENTS ---
+            const nav = document.getElementById('main-nav'); // FOUND IT!
+            const heroHeader = document.querySelector('header');
+            const mainContent = document.querySelector('.content-wrapper');
+            const navLinks = document.querySelectorAll('.nav-link');
+            const fixedLogo = document.getElementById('fixed-logo');
+            const loginBtn = document.getElementById('login-btn');
+            const loginModal = document.getElementById('login-modal');
+            const loginCloseBtn = document.getElementById('login-close-btn');
+            const loginOverlay = document.getElementById('login-overlay');
+
+            // --- 3. ROBUSTNESS CHECK ---
+            if (!nav || !heroHeader || !mainContent || !loginBtn || !loginModal || !loginCloseBtn || !loginOverlay) {
+                console.error("NEXERA Script Error: Could not find critical elements.");
+                return; // Script will not stop here anymore because we fixed the HTML ID
+            }
+
+            // --- 4. SCRAMBLE ANIMATION LOGIC ---
+            const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            const finalWord = "NEXERA";
+            const letterSpans = heroHeader.querySelectorAll('.letter');
+
+            function runScrambleAnimation() {
+                letterSpans.forEach(span => span.innerText = '');
+                let scrambleLetter = (span, index) => {
+                    const finalLetter = finalWord[index];
+                    let iteration = 0;
+                    const interval = setInterval(() => {
+                        span.innerText = letters[Math.floor(Math.random() * letters.length)];
+                        if(iteration >= 15) { 
+                            clearInterval(interval);
+                            span.innerText = finalLetter;
+                        }
+                        iteration++;
+                    }, 50); 
+                }
+                letterSpans.forEach((span, index) => setTimeout(() => scrambleLetter(span, index), index * 300));
+            }
+
+            // --- 5. STATE AND TRANSITION FUNCTIONS ---
+            let isHeroActive = true;
+            let isTransitioning = false; 
+
+            function showHero() {
+                if (isHeroActive || isTransitioning) return;
+                isTransitioning = true;
+                isHeroActive = true;
+                
+                heroHeader.classList.remove('hero-state-hidden');
+                setTimeout(() => {
+                    heroHeader.classList.remove('hero-hiding');
+                    mainContent.classList.remove('content-visible'); 
+                    if(fixedLogo) {
+                        fixedLogo.classList.remove('opacity-100', 'pointer-events-auto');
+                        fixedLogo.classList.add('opacity-0', 'pointer-events-none');
+                    }
+                }, 10); 
+
+                heroHeader.classList.add('hero-visible');
+                runScrambleAnimation(); 
+                document.body.style.overflow = 'hidden'; 
+                setTimeout(() => { isTransitioning = false; }, 500); 
+            }
+
+            function hideHero() {
+                if (!isHeroActive || isTransitioning) return;
+                isTransitioning = true;
+                isHeroActive = false;
+
+                heroHeader.classList.add('hero-hiding');
+                mainContent.classList.add('content-visible');
+                heroHeader.classList.remove('hero-visible'); 
+                
+                if(fixedLogo) {
+                    fixedLogo.classList.remove('opacity-0', 'pointer-events-none');
+                    fixedLogo.classList.add('opacity-100', 'pointer-events-auto');
+                }
+
+                document.body.style.overflow = 'hidden'; 
+                mainContent.scrollTop = 0; 
+                setTimeout(() => {
+                    isTransitioning = false;
+                    if (!isHeroActive) heroHeader.classList.add('hero-state-hidden');
+                }, 500); 
+            }
+
+            // --- 5.5 FILTER LOGIC ---
+            const filterBtns = document.querySelectorAll('.filter-btn');
+            const eventCards = document.querySelectorAll('.event-card');
+            filterBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    filterBtns.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    const filterValue = btn.getAttribute('data-filter');
+                    eventCards.forEach(card => {
+                        card.classList.remove('animate-fade-in');
+                        void card.offsetWidth; 
+                        const cardCategory = card.getAttribute('data-category');
+                        if (filterValue === 'all' || filterValue === cardCategory) {
+                            card.style.display = 'block';
+                            card.classList.add('animate-fade-in');
+                        } else {
+                            card.style.display = 'none';
+                        }
+                    });
+                });
+            });
+
+            // --- 6. TOGGLES ---
+            function toggleLoginModal() { loginModal.classList.toggle('modal-visible'); }
+            
+            // --- 7. EVENT LISTENERS ---
+            heroHeader.classList.add('hero-visible');
+            runScrambleAnimation();
+
+            navLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    const href = link.getAttribute('href');
+                    if (link.getAttribute('target') === '_blank') return;
+                    if (href.startsWith('#')) {
+                        e.preventDefault(); 
+                        if (href === '#') { showHero(); } 
+                        else {
+                            const targetId = href.substring(1);
+                            const targetElement = document.getElementById(targetId);
+                            if (targetElement) {
+                                if (isHeroActive) hideHero();
+                                mainContent.scrollTo({ top: targetElement.offsetTop - nav.offsetHeight, behavior: 'smooth' });
+                            }
+                        }
+                    } 
+                });
+            });
+
+            loginBtn.addEventListener('click', (e) => { e.preventDefault(); toggleLoginModal(); });
+            loginCloseBtn.addEventListener('click', toggleLoginModal);
+            loginOverlay.addEventListener('click', toggleLoginModal);
+            
+            window.addEventListener('wheel', (e) => {
+                if (isTransitioning) { e.preventDefault(); return; }
+                const contentScrollTop = mainContent.scrollTop;
+                if (e.deltaY > 0 && isHeroActive) { e.preventDefault(); hideHero(); } 
+                else if (e.deltaY < 0 && !isHeroActive && contentScrollTop <= 0) { e.preventDefault(); showHero(); }
+            }, { passive: false }); 
+
+            let touchStartY = 0;
+            window.addEventListener('touchstart', (e) => {
+                if (isTransitioning) return;
+                touchStartY = e.touches[0].clientY;
+            }, { passive: true });
+
+            window.addEventListener('touchmove', (e) => {
+                if (isTransitioning) { e.preventDefault(); return; }
+                const touchCurrentY = e.touches[0].clientY;
+                const deltaY = touchStartY - touchCurrentY; 
+                const contentScrollTop = mainContent.scrollTop;
+                if (deltaY > 5 && isHeroActive) { e.preventDefault(); hideHero(); } 
+                else if (deltaY < -5 && !isHeroActive && contentScrollTop <= 0) { e.preventDefault(); showHero(); }
+            }, { passive: false }); 
+
+            // REGISTER MODAL LOGIC
+            const registerModal = document.getElementById('register-modal');
+            const registerCloseBtn = document.getElementById('register-close-btn');
+            const registerOverlay = document.getElementById('register-overlay');
+            const switchToRegisterBtn = document.getElementById('switch-to-register');
+            const switchToLoginBtn = document.getElementById('switch-to-login');
+
+            function toggleRegisterModal() { registerModal.classList.toggle('modal-visible'); }
+            registerCloseBtn.addEventListener('click', toggleRegisterModal);
+            registerOverlay.addEventListener('click', toggleRegisterModal);
+
+            if(switchToRegisterBtn) {
+                switchToRegisterBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    toggleLoginModal(); 
+                    setTimeout(toggleRegisterModal, 200); 
+                });
+            }
+            if(switchToLoginBtn) {
+                switchToLoginBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    toggleRegisterModal(); 
+                    setTimeout(toggleLoginModal, 200); 
+                });
+            }
+        } 
+    </script>
+</body>
+</html>
