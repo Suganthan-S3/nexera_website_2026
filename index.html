@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>NEXERA - The Future is Now</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
@@ -25,6 +25,8 @@
             color: #e0e0e0;
             overflow: hidden; 
             position: relative;
+            /* Prevent bounce scrolling on whole body */
+            overscroll-behavior: none;
         }
 
         #tsparticles {
@@ -48,17 +50,19 @@
         }
 
         .login-card {
-            background-color: rgba(31, 41, 55, 0.8); 
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
+            background-color: rgba(31, 41, 55, 0.85); 
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
             padding: 2.5rem;
             border-radius: 1rem;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2), 0 10px 10px -5px rgba(0, 0, 0, 0.1);
             border-width: 1px;
             border-color: rgba(55, 65, 81, 0.5);
             transform: scale(0.95);
             opacity: 0;
             transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            max-height: 90vh; /* Mobile safeguard */
+            overflow-y: auto;
         }
         
         #login-modal.modal-visible .login-card,
@@ -90,7 +94,8 @@
            ==========================================
         */
         header {
-            height: 100vh;
+            height: 100vh; /* Fallback */
+            height: 100dvh; /* Mobile dynamic height */
             width: 100%;
             display: flex; 
             flex-direction: column;
@@ -111,9 +116,11 @@
         }
 
         header.hero-hiding {
-            transform: translate(-45vw, -45vh) scale(0.1); 
-            opacity: 0.2;
+            /* Modified for Mobile Stability */
+            opacity: 0;
+            transform: scale(0.8); /* Less movement on hide */
             filter: blur(5px);
+            pointer-events: none;
         }
 
         /* ==========================================
@@ -123,7 +130,7 @@
         .letter {
             opacity: 0;
             display: inline-block;
-            font-size: clamp(3rem, 15vw, 10rem); 
+            font-size: clamp(2.5rem, 12vw, 10rem); /* Adjusted min size for small phones */
             font-weight: 900;
             color: white;
             transition: opacity 0.5s ease;
@@ -132,17 +139,6 @@
 
         .hero-visible .letter {
             opacity: 1;
-        }
-
-        .hero-text {
-            opacity: 0;
-            transform: translateY(20px);
-            transition: opacity 0.5s ease 2s, transform 0.5s ease 2s;
-        }
-
-        .hero-visible .hero-text {
-            opacity: 1;
-            transform: translateY(0);
         }
 
         /* ==========================================
@@ -155,15 +151,20 @@
             background-color: transparent;
             overflow-y: auto;
             height: 100vh;
+            height: 100dvh;
             opacity: 0;
             transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1);
             pointer-events: none; 
-            backdrop-filter: blur(2px);
+            backdrop-filter: blur(0px);
+            /* Mobile Scroll Fixes */
+            -webkit-overflow-scrolling: touch; 
+            overscroll-behavior-y: contain;
         }
         
         .content-wrapper.content-visible {
             opacity: 1;
             pointer-events: auto;
+            backdrop-filter: blur(5px); /* Only apply blur when visible to save mobile GPU */
         }
 
         /* ==========================================
@@ -172,21 +173,10 @@
         */
         .event-card svg { transition: all 0.3s ease; }
         .event-card:hover svg { transform: scale(1.1); color: #60a5fa; }
-        .event-card { transition: all 0.3s ease; } /* Added general transition */
-
-        .footer-card {
-            background-color: rgba(31, 41, 55, 0.5); 
-            backdrop-filter: blur(4px); 
-            -webkit-backdrop-filter: blur(4px); 
-            padding: 2rem; 
-            border-radius: 1rem; 
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-            border-width: 1px; 
-            border-color: rgba(55, 65, 81, 0.5); 
-        }
+        .event-card { transition: all 0.3s ease; } 
 
         /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: #0a0a2a; }
         ::-webkit-scrollbar-thumb { background: #1f2937; border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: #3b82f6; }
@@ -219,7 +209,6 @@
             gap: 4rem;
             animation: scroll 20s linear infinite;
         }
-        .marquee-content:hover { animation-play-state: paused; }
         @keyframes scroll {
             0% { transform: translateX(0); }
             100% { transform: translateX(-50%); }
@@ -254,32 +243,32 @@
         }
     </style>
 </head>
-<body class="relative">
+<body class="relative bg-[#0a0a2a]">
 
     <div id="tsparticles"></div>
 
-    <div id="fixed-logo" class="fixed top-8 left-8 z-50 opacity-0 transition-all duration-500 pointer-events-none">
-        <a href="#" class="text-white text-2xl font-bold tracking-widest hover:text-blue-400 transition-colors" style="font-family: 'Orbitron', sans-serif;">
+    <div id="fixed-logo" class="fixed top-6 left-6 z-50 opacity-0 transition-all duration-500 pointer-events-none">
+        <a href="#" class="text-white text-xl md:text-2xl font-bold tracking-widest hover:text-blue-400 transition-colors" style="font-family: 'Orbitron', sans-serif;">
             NEXERA
         </a>
     </div>
 
-    <nav id="main-nav" class="fixed top-8 right-8 z-50 flex items-center">
-        <div class="flex items-center space-x-6 md:space-x-8">
-            <a href="#" class="nav-link text-gray-400 hover:text-white text-xs md:text-sm uppercase tracking-widest hover:-translate-y-0.5 transition-all duration-300">Home</a>
+    <nav id="main-nav" class="fixed top-6 right-6 z-50 flex items-center">
+        <div class="flex items-center space-x-3 md:space-x-8 bg-black/30 backdrop-blur-md px-4 py-2 rounded-full border border-white/10">
+            <a href="#" class="nav-link text-gray-400 hover:text-white text-[10px] md:text-sm uppercase tracking-widest transition-all">Home</a>
             <span class="w-1 h-1 bg-gray-600 rounded-full"></span>
-            <a href="#events" class="nav-link text-gray-400 hover:text-white text-xs md:text-sm uppercase tracking-widest hover:-translate-y-0.5 transition-all duration-300">Events</a>
+            <a href="#events" class="nav-link text-gray-400 hover:text-white text-[10px] md:text-sm uppercase tracking-widest transition-all">Events</a>
+            <span class="w-1 h-1 bg-gray-600 rounded-full hidden md:block"></span>
+            <a href="brochure.jpg" target="_blank" class="hidden md:block text-gray-400 hover:text-white text-[10px] md:text-sm uppercase tracking-widest transition-all">Brochure</a>
             <span class="w-1 h-1 bg-gray-600 rounded-full"></span>
-            <a href="brochure.jpg" target="_blank" class="text-gray-400 hover:text-white text-xs md:text-sm uppercase tracking-widest hover:-translate-y-0.5 transition-all duration-300">Brochure</a>
-            <span class="w-1 h-1 bg-gray-600 rounded-full"></span>
-            <a href="#" id="login-btn" class="text-blue-400 hover:text-blue-300 text-xs md:text-sm uppercase tracking-widest font-semibold hover:-translate-y-0.5 transition-all duration-300">Login</a>
+            <a href="#" id="login-btn" class="text-blue-400 hover:text-blue-300 text-[10px] md:text-sm uppercase tracking-widest font-semibold transition-all">Login</a>
         </div>
     </nav>
 
     <header class="hero-visible"> 
-        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[60vw] h-[60vw] max-w-[800px] max-h-[800px] bg-blue-700 rounded-full opacity-30 blur-[150px]"></div>
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[60vw] h-[60vw] max-w-[800px] max-h-[800px] bg-blue-700 rounded-full opacity-30 blur-[120px]"></div>
 
-        <h1 class="z-10" aria-label="NEXERA">
+        <h1 class="z-10 text-center px-2" aria-label="NEXERA">
             <span class="letter"></span>
             <span class="letter"></span>
             <span class="letter"></span>
@@ -291,12 +280,12 @@
     </header>
 
     <div id="login-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 opacity-0 pointer-events-none transition-all duration-300">
-        <div id="login-overlay" class="absolute inset-0 bg-black/70 backdrop-blur-sm"></div>
+        <div id="login-overlay" class="absolute inset-0 bg-black/80 backdrop-blur-sm"></div>
         <div class="login-card relative w-full max-w-md">
-            <button id="login-close-btn" class="absolute -top-3 -right-3 text-white bg-gray-700 rounded-full p-1 hover:bg-gray-600 transition-colors">
+            <button id="login-close-btn" class="absolute -top-3 -right-3 text-white bg-gray-700 rounded-full p-1 hover:bg-gray-600 transition-colors z-20">
                 <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
             </button>
-            <h3 class="text-4xl font-bold text-white mb-6 text-center">Login</h3>
+            <h3 class="text-3xl md:text-4xl font-bold text-white mb-6 text-center">Login</h3>
             <form action="#">
                 <div class="relative z-0 mb-6">
                     <input type="email" id="email" name="email" class="login-input peer" placeholder=" " required />
@@ -307,7 +296,7 @@
                     <label for="password" class="login-label-bg px-1 absolute text-blue-200 duration-300 transform -translate-y-5 scale-90 top-3 z-10 origin-[0] left-2 peer-focus:text-blue-400 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-1 peer-focus:scale-90 peer-focus:-translate-y-5">Password</label>
                 </div>
                 <button type="submit" class="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-500 transition-all duration-300">Sign In</button>
-                <div class="flex justify-between text-sm mt-6">
+                <div class="flex flex-col md:flex-row justify-between text-sm mt-6 gap-2 text-center">
                     <a href="#" class="font-semibold text-blue-400 hover:text-blue-300">Forgot Password?</a>
                     <a href="#" id="switch-to-register" class="font-semibold text-blue-400 hover:text-blue-300">Create an account</a>
                 </div>
@@ -316,26 +305,26 @@
     </div>
 
     <div id="register-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 opacity-0 pointer-events-none transition-all duration-300">
-        <div id="register-overlay" class="absolute inset-0 bg-black/70 backdrop-blur-sm"></div>
+        <div id="register-overlay" class="absolute inset-0 bg-black/80 backdrop-blur-sm"></div>
         <div class="login-card relative w-full max-w-md">
-            <button id="register-close-btn" class="absolute -top-3 -right-3 text-white bg-gray-700 rounded-full p-1 hover:bg-gray-600 transition-colors">
+            <button id="register-close-btn" class="absolute -top-3 -right-3 text-white bg-gray-700 rounded-full p-1 hover:bg-gray-600 transition-colors z-20">
                 <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
             </button>
-            <h3 class="text-3xl font-bold text-white mb-6 text-center">Create Account</h3>
+            <h3 class="text-2xl md:text-3xl font-bold text-white mb-6 text-center">Create Account</h3>
             <form action="#">
-                <div class="relative z-0 mb-6">
+                <div class="relative z-0 mb-4">
                     <input type="text" id="reg-name" name="reg-name" class="login-input peer" placeholder=" " required />
                     <label for="reg-name" class="login-label-bg px-1 absolute text-blue-200 duration-300 transform -translate-y-5 scale-90 top-3 z-10 origin-[0] left-2 peer-focus:text-blue-400 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-1 peer-focus:scale-90 peer-focus:-translate-y-5">Full Name</label>
                 </div>
-                <div class="relative z-0 mb-6">
+                <div class="relative z-0 mb-4">
                     <input type="email" id="reg-email" name="reg-email" class="login-input peer" placeholder=" " required />
                     <label for="reg-email" class="login-label-bg px-1 absolute text-blue-200 duration-300 transform -translate-y-5 scale-90 top-3 z-10 origin-[0] left-2 peer-focus:text-blue-400 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-1 peer-focus:scale-90 peer-focus:-translate-y-5">Email Address</label>
                 </div>
-                <div class="relative z-0 mb-6">
+                <div class="relative z-0 mb-4">
                     <input type="password" id="reg-password" name="reg-password" class="login-input peer" placeholder=" " required />
                     <label for="reg-password" class="login-label-bg px-1 absolute text-blue-200 duration-300 transform -translate-y-5 scale-90 top-3 z-10 origin-[0] left-2 peer-focus:text-blue-400 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-1 peer-focus:scale-90 peer-focus:-translate-y-5">Password</label>
                 </div>
-                <div class="relative z-0 mb-6">
+                <div class="relative z-0 mb-4">
                     <input type="password" id="reg-confirm" name="reg-confirm" class="login-input peer" placeholder=" " required />
                     <label for="reg-confirm" class="login-label-bg px-1 absolute text-blue-200 duration-300 transform -translate-y-5 scale-90 top-3 z-10 origin-[0] left-2 peer-focus:text-blue-400 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-1 peer-focus:scale-90 peer-focus:-translate-y-5">Confirm Password</label>
                 </div>
@@ -350,13 +339,13 @@
 
     <main class="content-wrapper relative z-20">
         <section id="events" class="container mx-auto px-6 py-24 min-h-screen">
-            <h2 class="text-4xl font-bold text-center mb-4 text-gradient">Upcoming Events</h2>
+            <h2 class="text-3xl md:text-4xl font-bold text-center mb-4 text-gradient">Upcoming Events</h2>
             
-            <div class="flex justify-center gap-4 mb-12 flex-wrap">
-                <button class="filter-btn active px-6 py-2 rounded-full font-semibold text-sm tracking-wide" data-filter="all">All</button>
-                <button class="filter-btn px-6 py-2 rounded-full font-semibold text-sm tracking-wide" data-filter="tech">Technical</button>
-                <button class="filter-btn px-6 py-2 rounded-full font-semibold text-sm tracking-wide" data-filter="flagship">Flagship</button>
-                <button class="filter-btn px-6 py-2 rounded-full font-semibold text-sm tracking-wide" data-filter="non-tech">Non-Tech</button>
+            <div class="flex justify-center gap-2 mb-12 flex-wrap">
+                <button class="filter-btn active px-4 py-1.5 md:px-6 md:py-2 rounded-full font-semibold text-xs md:text-sm tracking-wide" data-filter="all">All</button>
+                <button class="filter-btn px-4 py-1.5 md:px-6 md:py-2 rounded-full font-semibold text-xs md:text-sm tracking-wide" data-filter="tech">Technical</button>
+                <button class="filter-btn px-4 py-1.5 md:px-6 md:py-2 rounded-full font-semibold text-xs md:text-sm tracking-wide" data-filter="flagship">Flagship</button>
+                <button class="filter-btn px-4 py-1.5 md:px-6 md:py-2 rounded-full font-semibold text-xs md:text-sm tracking-wide" data-filter="non-tech">Non-Tech</button>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6" id="events-grid">                
@@ -447,7 +436,7 @@
                                     </div>
                                 </div>
                             </div>
-
+                            
                             <div class="flex flex-col md:flex-row items-center justify-between w-full relative">
                                 <div class="order-1 md:w-5/12"></div>
                                 <div class="z-20 flex items-center order-1 bg-blue-600 shadow-xl w-6 h-6 rounded-full border-2 border-gray-900 absolute left-2.5 md:left-1/2 md:transform md:-translate-x-1/2 -mt-10 md:mt-0"></div>
@@ -460,30 +449,6 @@
                                 </div>
                             </div>
 
-                            <div class="flex flex-col md:flex-row-reverse items-center justify-between w-full relative">
-                                <div class="order-1 md:w-5/12"></div>
-                                <div class="z-20 flex items-center order-1 bg-blue-600 shadow-xl w-6 h-6 rounded-full border-2 border-gray-900 absolute left-2.5 md:left-1/2 md:transform md:-translate-x-1/2 -mt-10 md:mt-0"></div>
-                                <div class="order-1 md:w-5/12 w-full pl-10 md:pl-0 md:pr-0">
-                                    <div class="bg-gray-800/50 backdrop-blur-sm p-6 rounded-xl border border-gray-700/50 hover:border-blue-500 transition-all">
-                                        <span class="text-blue-400 font-bold text-lg block mb-1">05:00 PM</span>
-                                        <h3 class="text-xl font-bold text-white">Prize Distribution</h3>
-                                        <p class="text-gray-400 text-sm mt-1">Main Auditorium</p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="flex flex-col md:flex-row items-center justify-between w-full relative">
-                                <div class="order-1 md:w-5/12"></div>
-                                <div class="z-20 flex items-center order-1 bg-blue-600 shadow-xl w-6 h-6 rounded-full border-2 border-gray-900 absolute left-2.5 md:left-1/2 md:transform md:-translate-x-1/2 -mt-10 md:mt-0"></div>
-                                <div class="order-1 md:w-5/12 w-full pl-10 md:pl-0 md:pr-0">
-                                    <div class="bg-gray-800/50 backdrop-blur-sm p-6 rounded-xl border border-gray-700/50 hover:border-blue-500 transition-all">
-                                        <span class="text-blue-400 font-bold text-lg block mb-1">07:00 PM</span>
-                                        <h3 class="text-xl font-bold text-white">Hackathon</h3>
-                                        <p class="text-gray-400 text-sm mt-1">Open Air Theatre</p>
-                                    </div>
-                                </div>
-                            </div>
-
                         </div>
                     </div>
                 </div>
@@ -491,13 +456,9 @@
         </section>
       <footer id="contact" class="pt-20 pb-10 relative z-20">
             <div class="container mx-auto px-6">
-                
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-10 items-start">
-                    
                     <div class="flex flex-col items-center md:items-start text-center md:text-left">
-                        
                         <p class="text-blue-400 text-xs font-bold uppercase tracking-widest mb-2">Organized By</p>
-                        
                         <h3 class="text-xl font-bold text-gray-200">
                             Coimbatore Institute of Technology
                         </h3>
@@ -508,7 +469,6 @@
 
                     <div class="flex flex-col items-center md:items-start">
                         <h4 class="text-white font-semibold mb-4 uppercase tracking-wider text-sm">Contact Us</h4>
-                        
                         <div class="space-y-3">
                             <a href="mailto:info@nexera.com" class="flex items-center space-x-3 text-gray-400 hover:text-blue-400 transition-colors">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
@@ -528,22 +488,8 @@
                                 <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.07 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.225-.149-4.771-1.664-4.919-4.919-.058-1.265-.07-1.645-.07-4.849 0-3.204.012-3.584.07-4.849.149-3.225 1.664-4.771 4.919-4.919 1.266-.058 1.645-.07 4.849-.07zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-7.025 2.87-7.225 7.225-.058 1.28-.072 1.688-.072 4.947 0 3.259.014 3.667.072 4.947.2 4.358 2.867 7.025 7.225 7.225 1.28.058 1.688.072 4.947.072 3.259 0 3.667-.014 4.947-.072 4.354-.2 7.02-2.867 7.225-7.225.058-1.28.072-1.688.072-4.947-.072zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.162 6.162 6.162 6.162-2.759 6.162-6.162-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4s1.791-4 4-4 4 1.79 4 4-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
                             </a>
                             
-                            <a href="#" class="text-gray-400 hover:text-red-500 transition-colors transform hover:scale-110">
-                                <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/></svg>
-                            </a>
-
-                            <a href="#" class="text-gray-400 hover:text-blue-500 transition-colors transform hover:scale-110">
-                                <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24"><path d="M4.98 3.5c0 1.381-1.11 2.5-2.48 2.5s-2.48-1.119-2.48-2.5c0-1.38 1.11-2.5 2.48-2.5s2.48 1.12 2.48 2.5zm.02 4.5h-5v16h5v-16zm7.982 0h-4.968v16h4.969v-8.399c0-4.67 6.029-5.052 6.029 0v8.399h4.988v-10.131c0-7.88-8.922-7.593-11.018-3.714v-2.155z"/></svg>
-                            </a>
-                        </div>
+                            </div>
                     </div>
-
-                </div>
-
-                <div class="mt-12 pt-8 text-center">
-                    <p class="text-gray-600 text-sm">
-                        &copy; 2024 NEXERA. All rights reserved.
-                    </p>
                 </div>
             </div>
         </footer>
@@ -568,25 +514,47 @@
                                 onClick: { enable: true, mode: "push" },
                             },
                             modes: {
-                                grab: { distance: 150, links: { opacity: 0.5 } },
+                                grab: { 
+                                    distance: 150, 
+                                    links: { opacity: 0.5 } 
+                                },
                                 push: { quantity: 4 },
                             },
                         },
                         particles: {
                             color: { value: "#ffffff" },
                             links: { color: "#ffffff", distance: 150, enable: true, opacity: 0.4, width: 1 },
-                            move: { enable: true, speed: 3 }, // Increased Speed
-                            number: { density: { enable: true, area: 800 }, value: 120 }, // Increased Density
+                            move: { enable: true, speed: 2 }, 
+                            number: { density: { enable: true, area: 800 }, value: 100 }, 
                             opacity: { value: 0.5 },
-                            size: { value: { min: 1, max: 4 } },
+                            size: { value: { min: 1, max: 3 } },
                         },
+                        // --- RESPONSIVE CONFIG (FIX FOR WHITE SCREEN ON MOBILE) ---
+                        responsive: [
+                            {
+                                maxWidth: 768,
+                                options: {
+                                    particles: {
+                                        number: { value: 40 }, // Drastically reduce count on mobile
+                                    },
+                                    interactivity: {
+                                        modes: {
+                                            grab: {
+                                                distance: 100, // Reduce interaction distance
+                                                links: { opacity: 0.2 } // Faint lines so it doesn't block background
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        ],
                         detectRetina: true,
                     },
                 });
             })();
 
             // --- 2. GET ALL NECESSARY ELEMENTS ---
-            const nav = document.getElementById('main-nav'); // FOUND IT!
+            const nav = document.getElementById('main-nav'); 
             const heroHeader = document.querySelector('header');
             const mainContent = document.querySelector('.content-wrapper');
             const navLinks = document.querySelectorAll('.nav-link');
@@ -596,10 +564,9 @@
             const loginCloseBtn = document.getElementById('login-close-btn');
             const loginOverlay = document.getElementById('login-overlay');
 
-            // --- 3. ROBUSTNESS CHECK ---
             if (!nav || !heroHeader || !mainContent || !loginBtn || !loginModal || !loginCloseBtn || !loginOverlay) {
                 console.error("NEXERA Script Error: Could not find critical elements.");
-                return; // Script will not stop here anymore because we fixed the HTML ID
+                return;
             }
 
             // --- 4. SCRAMBLE ANIMATION LOGIC ---
@@ -723,6 +690,7 @@
             loginCloseBtn.addEventListener('click', toggleLoginModal);
             loginOverlay.addEventListener('click', toggleLoginModal);
             
+            // MOUSE WHEEL LOGIC
             window.addEventListener('wheel', (e) => {
                 if (isTransitioning) { e.preventDefault(); return; }
                 const contentScrollTop = mainContent.scrollTop;
@@ -730,6 +698,7 @@
                 else if (e.deltaY < 0 && !isHeroActive && contentScrollTop <= 0) { e.preventDefault(); showHero(); }
             }, { passive: false }); 
 
+            // --- IMPROVED TOUCH LOGIC FOR MOBILE ---
             let touchStartY = 0;
             window.addEventListener('touchstart', (e) => {
                 if (isTransitioning) return;
@@ -737,12 +706,33 @@
             }, { passive: true });
 
             window.addEventListener('touchmove', (e) => {
-                if (isTransitioning) { e.preventDefault(); return; }
+                if (isTransitioning) { 
+                    e.preventDefault(); 
+                    return; 
+                }
+                
                 const touchCurrentY = e.touches[0].clientY;
                 const deltaY = touchStartY - touchCurrentY; 
                 const contentScrollTop = mainContent.scrollTop;
-                if (deltaY > 5 && isHeroActive) { e.preventDefault(); hideHero(); } 
-                else if (deltaY < -5 && !isHeroActive && contentScrollTop <= 0) { e.preventDefault(); showHero(); }
+
+                // 1. If Hero is active and user swipes UP -> Hide Hero
+                if (isHeroActive) {
+                    if (deltaY > 10) { // Small threshold
+                        e.preventDefault();
+                        hideHero();
+                    } else {
+                         e.preventDefault(); // Prevent overscroll on hero
+                    }
+                } 
+                // 2. If Content is active
+                else {
+                    // Only intercept if we are at the very top AND swiping DOWN (negative delta)
+                    if (contentScrollTop <= 0 && deltaY < -10) {
+                        e.preventDefault(); 
+                        showHero();
+                    }
+                    // Otherwise, let native scrolling happen! DO NOT PreventDefault.
+                }
             }, { passive: false }); 
 
             // REGISTER MODAL LOGIC
@@ -773,4 +763,5 @@
         } 
     </script>
 </body>
+
 </html>
