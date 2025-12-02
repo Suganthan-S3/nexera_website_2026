@@ -25,7 +25,6 @@
             color: #e0e0e0;
             overflow: hidden; 
             position: relative;
-            /* Prevent bounce scrolling on whole body */
             overscroll-behavior: none;
         }
 
@@ -61,7 +60,7 @@
             transform: scale(0.95);
             opacity: 0;
             transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            max-height: 90vh; /* Mobile safeguard */
+            max-height: 90vh; 
             overflow-y: auto;
         }
         
@@ -94,8 +93,7 @@
            ==========================================
         */
         header {
-            height: 100vh; /* Fallback */
-            height: 100dvh; /* Mobile dynamic height */
+            height: 100dvh; 
             width: 100%;
             display: flex; 
             flex-direction: column;
@@ -116,9 +114,8 @@
         }
 
         header.hero-hiding {
-            /* Modified for Mobile Stability */
             opacity: 0;
-            transform: scale(0.8); /* Less movement on hide */
+            transform: scale(0.8); 
             filter: blur(5px);
             pointer-events: none;
         }
@@ -130,7 +127,7 @@
         .letter {
             opacity: 0;
             display: inline-block;
-            font-size: clamp(2.5rem, 12vw, 10rem); /* Adjusted min size for small phones */
+            font-size: clamp(2.5rem, 12vw, 10rem);
             font-weight: 900;
             color: white;
             transition: opacity 0.5s ease;
@@ -150,13 +147,11 @@
             z-index: 20; 
             background-color: transparent;
             overflow-y: auto;
-            height: 100vh;
             height: 100dvh;
             opacity: 0;
             transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1);
             pointer-events: none; 
             backdrop-filter: blur(0px);
-            /* Mobile Scroll Fixes */
             -webkit-overflow-scrolling: touch; 
             overscroll-behavior-y: contain;
         }
@@ -164,7 +159,7 @@
         .content-wrapper.content-visible {
             opacity: 1;
             pointer-events: auto;
-            backdrop-filter: blur(5px); /* Only apply blur when visible to save mobile GPU */
+            backdrop-filter: blur(5px);
         }
 
         /* ==========================================
@@ -253,13 +248,15 @@
         </a>
     </div>
 
-    <nav id="main-nav" class="fixed top-6 right-6 z-50 flex items-center">
-        <div class="flex items-center space-x-3 md:space-x-8 bg-black/30 backdrop-blur-md px-4 py-2 rounded-full border border-white/10">
+    <nav id="main-nav" class="fixed top-6 right-6 z-50 flex items-center max-w-[90vw]">
+        <div class="flex items-center space-x-3 md:space-x-8 bg-black/30 backdrop-blur-md px-3 py-2 md:px-4 rounded-full border border-white/10">
             <a href="#" class="nav-link text-gray-400 hover:text-white text-[10px] md:text-sm uppercase tracking-widest transition-all">Home</a>
             <span class="w-1 h-1 bg-gray-600 rounded-full"></span>
             <a href="#events" class="nav-link text-gray-400 hover:text-white text-[10px] md:text-sm uppercase tracking-widest transition-all">Events</a>
-            <span class="w-1 h-1 bg-gray-600 rounded-full hidden md:block"></span>
-            <a href="brochure.jpg" target="_blank" class="hidden md:block text-gray-400 hover:text-white text-[10px] md:text-sm uppercase tracking-widest transition-all">Brochure</a>
+            <span class="w-1 h-1 bg-gray-600 rounded-full"></span>
+            
+            <a href="brochure.jpg" target="_blank" class="text-gray-400 hover:text-white text-[10px] md:text-sm uppercase tracking-widest transition-all">Brochure</a>
+            
             <span class="w-1 h-1 bg-gray-600 rounded-full"></span>
             <a href="#" id="login-btn" class="text-blue-400 hover:text-blue-300 text-[10px] md:text-sm uppercase tracking-widest font-semibold transition-all">Login</a>
         </div>
@@ -437,7 +434,7 @@
                                 </div>
                             </div>
                             
-                            <div class="flex flex-col md:flex-row items-center justify-between w-full relative">
+                             <div class="flex flex-col md:flex-row items-center justify-between w-full relative">
                                 <div class="order-1 md:w-5/12"></div>
                                 <div class="z-20 flex items-center order-1 bg-blue-600 shadow-xl w-6 h-6 rounded-full border-2 border-gray-900 absolute left-2.5 md:left-1/2 md:transform md:-translate-x-1/2 -mt-10 md:mt-0"></div>
                                 <div class="order-1 md:w-5/12 w-full pl-10 md:pl-0 md:pr-0">
@@ -487,8 +484,7 @@
                             <a href="#" class="text-gray-400 hover:text-pink-500 transition-colors transform hover:scale-110">
                                 <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.07 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.225-.149-4.771-1.664-4.919-4.919-.058-1.265-.07-1.645-.07-4.849 0-3.204.012-3.584.07-4.849.149-3.225 1.664-4.771 4.919-4.919 1.266-.058 1.645-.07 4.849-.07zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-7.025 2.87-7.225 7.225-.058 1.28-.072 1.688-.072 4.947 0 3.259.014 3.667.072 4.947.2 4.358 2.867 7.025 7.225 7.225 1.28.058 1.688.072 4.947.072 3.259 0 3.667-.014 4.947-.072 4.354-.2 7.02-2.867 7.225-7.225.058-1.28.072-1.688.072-4.947-.072zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.162 6.162 6.162 6.162-2.759 6.162-6.162-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4s1.791-4 4-4 4 1.79 4 4-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
                             </a>
-                            
-                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -529,19 +525,33 @@
                             opacity: { value: 0.5 },
                             size: { value: { min: 1, max: 3 } },
                         },
-                        // --- RESPONSIVE CONFIG (FIX FOR WHITE SCREEN ON MOBILE) ---
+                        // --- UPDATED MOBILE RESPONSIVE CONFIG ---
                         responsive: [
                             {
                                 maxWidth: 768,
                                 options: {
                                     particles: {
-                                        number: { value: 40 }, // Drastically reduce count on mobile
+                                        // Count reduced to 25 to limit total possible lines to ~10
+                                        number: { value: 25 }, 
+                                        links: {
+                                            enable: true,
+                                            distance: 110, // Small distance for "permanent" lines
+                                            opacity: 0.3, // Visible but subtle
+                                            maxCons: 2 // Limits starbursts
+                                        }
                                     },
                                     interactivity: {
+                                        events: {
+                                            // onHover handles touch interaction on mobile in tsParticles
+                                            onHover: { enable: true, mode: "grab" }
+                                        },
                                         modes: {
                                             grab: {
-                                                distance: 100, // Reduce interaction distance
-                                                links: { opacity: 0.2 } // Faint lines so it doesn't block background
+                                                distance: 140, // Slightly larger radius to grab particles on touch
+                                                links: {
+                                                    opacity: 1, // High opacity for touch lines
+                                                    color: "#60a5fa" // Optional: Make touch lines blueish
+                                                }
                                             }
                                         }
                                     }
@@ -690,7 +700,6 @@
             loginCloseBtn.addEventListener('click', toggleLoginModal);
             loginOverlay.addEventListener('click', toggleLoginModal);
             
-            // MOUSE WHEEL LOGIC
             window.addEventListener('wheel', (e) => {
                 if (isTransitioning) { e.preventDefault(); return; }
                 const contentScrollTop = mainContent.scrollTop;
@@ -698,7 +707,7 @@
                 else if (e.deltaY < 0 && !isHeroActive && contentScrollTop <= 0) { e.preventDefault(); showHero(); }
             }, { passive: false }); 
 
-            // --- IMPROVED TOUCH LOGIC FOR MOBILE ---
+            // --- TOUCH LOGIC ---
             let touchStartY = 0;
             window.addEventListener('touchstart', (e) => {
                 if (isTransitioning) return;
@@ -715,23 +724,19 @@
                 const deltaY = touchStartY - touchCurrentY; 
                 const contentScrollTop = mainContent.scrollTop;
 
-                // 1. If Hero is active and user swipes UP -> Hide Hero
                 if (isHeroActive) {
-                    if (deltaY > 10) { // Small threshold
+                    if (deltaY > 10) { 
                         e.preventDefault();
                         hideHero();
                     } else {
-                         e.preventDefault(); // Prevent overscroll on hero
+                         e.preventDefault(); 
                     }
                 } 
-                // 2. If Content is active
                 else {
-                    // Only intercept if we are at the very top AND swiping DOWN (negative delta)
                     if (contentScrollTop <= 0 && deltaY < -10) {
                         e.preventDefault(); 
                         showHero();
                     }
-                    // Otherwise, let native scrolling happen! DO NOT PreventDefault.
                 }
             }, { passive: false }); 
 
